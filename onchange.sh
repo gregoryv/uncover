@@ -12,5 +12,7 @@ case $extension in
         ;;
 esac
 
-go test -cover .
+go install github.com/gregoryv/cover/cmd/uncover
+go test -cover -coverprofile /tmp/c.out .
+go tool cover -o /tmp/coverage.html -html /tmp/c.out
 go build .

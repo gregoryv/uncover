@@ -14,9 +14,18 @@ import (
 	"os"
 )
 
-// htmlOutput reads the profile data from profile and generates an HTML
-// coverage report, writing it to outfile. If outfile is empty,
-// it writes the report to a temporary file and opens it in a web browser.
+const (
+	red   = "\033[31m"
+	green = "\033[32m"
+	reset = "\033[0m"
+)
+
+func a() {
+	// hepp
+}
+
+// Write reads the profile data from profile and generates colored
+// vt100 output to stdout.
 func Write(profile string) error {
 	profiles, err := ParseProfiles(profile)
 	if err != nil {
@@ -27,9 +36,6 @@ func Write(profile string) error {
 
 	for _, profile := range profiles {
 		fn := profile.FileName
-		if profile.Mode == "set" {
-			d.Set = true
-		}
 		file, err := findFile(fn)
 		if err != nil {
 			return err
@@ -39,7 +45,8 @@ func Write(profile string) error {
 			return fmt.Errorf("can't read %q: %v", fn, err)
 		}
 		var buf bytes.Buffer
-		err = htmlGen(&buf, src, profile.Boundaries(src))
+		fmt.Fprintf(&buf, "FILE: %s\n-----------------------------------\n", file)
+		err = vt100Gen(&buf, src, profile.Boundaries(src))
 		if err != nil {
 			return err
 		}
@@ -75,15 +82,9 @@ func percentCovered(p *Profile) float64 {
 	return float64(covered) / float64(total) * 100
 }
 
-const (
-	red   = "\033[31m"
-	green = "\033[32m"
-	reset = "\033[0m"
-)
-
-// htmlGen generates an HTML coverage report with the provided filename,
+// vt100Gen generates an coverage report with the provided filename,
 // source code, and tokens, and writes it to the given Writer.
-func htmlGen(w io.Writer, src []byte, boundaries []Boundary) error {
+func vt100Gen(w io.Writer, src []byte, boundaries []Boundary) error {
 	dst := bufio.NewWriter(w)
 	var color string
 	for i := range src {
@@ -100,18 +101,7 @@ func htmlGen(w io.Writer, src []byte, boundaries []Boundary) error {
 			}
 			boundaries = boundaries[1:]
 		}
-		switch b := src[i]; b {
-		case '>':
-			dst.WriteString("&gt;")
-		case '<':
-			dst.WriteString("&lt;")
-		case '&':
-			dst.WriteString("&amp;")
-		case '\t':
-			dst.WriteString("        ")
-		default:
-			dst.WriteByte(b)
-		}
+		dst.WriteByte(src[i])
 	}
 	return dst.Flush()
 }
