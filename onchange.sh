@@ -9,7 +9,8 @@ nameonly="${filename%.*}"
 case $extension in
     go)
         gofmt -w $path
-        go test -cover .
-        go build cmd/cover
         ;;
 esac
+
+go test -cover .
+go build .
