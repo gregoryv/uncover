@@ -6,6 +6,6 @@ import (
 )
 
 func TestWrite(t *testing.T) {
-	cover.Write("/tmp/c.out")
+	cover.WriteOutput("/tmp/c.out")
 	t.Fail()
 }

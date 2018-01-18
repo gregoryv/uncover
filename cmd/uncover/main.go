@@ -17,5 +17,5 @@ func main() {
 	flag.Parse()
 	stamp.AsFlagged()
 
-	cover.Write(os.Args[1])
+	cover.WriteOutput(os.Args[1])
 }
