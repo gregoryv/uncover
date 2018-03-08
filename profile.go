@@ -39,8 +39,8 @@ func (p byFileName) Len() int           { return len(p) }
 func (p byFileName) Less(i, j int) bool { return p[i].FileName < p[j].FileName }
 func (p byFileName) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
 
-// ParseProfiles parses profile data in the specified file and returns a
-// Profile for each source file described therein.
+// ParseProfiles parses profile data in the specified file and returns
+// a Profile for each source file described therein.
 func ParseProfiles(fileName string) ([]*Profile, error) {
 	pf, err := os.Open(fileName)
 	if err != nil {
@@ -50,10 +50,10 @@ func ParseProfiles(fileName string) ([]*Profile, error) {
 
 	files := make(map[string]*Profile)
 	buf := bufio.NewReader(pf)
-	// First line is "mode: foo", where foo is "set", "count", or "atomic".
-	// Rest of file is in the format
-	//	encoding/base64/base64.go:34.44,37.40 3 1
-	// where the fields are: name.go:line.column,line.column numberOfStatements count
+	// First line is "mode: foo", where foo is "set", "count", or
+	// "atomic".  Rest of file is in the format
+	// encoding/base64/base64.go:34.44,37.40 3 1 where the fields are:
+	// name.go:line.column,line.column numberOfStatements count
 	s := bufio.NewScanner(buf)
 	mode := ""
 	for s.Scan() {
@@ -103,7 +103,9 @@ func ParseProfiles(fileName string) ([]*Profile, error) {
 				b.EndLine == last.EndLine &&
 				b.EndCol == last.EndCol {
 				if b.NumStmt != last.NumStmt {
-					return nil, fmt.Errorf("inconsistent NumStmt: changed from %d to %d", last.NumStmt, b.NumStmt)
+					return nil, fmt.Errorf(
+						"inconsistent NumStmt: changed from %d to %d",
+						last.NumStmt, b.NumStmt)
 				}
 				if mode == "set" {
 					p.Blocks[j-1].Count |= b.Count
@@ -145,9 +147,10 @@ func toInt(s string) int {
 	return i
 }
 
-// Boundary represents the position in a source file of the beginning or end of a
-// block as reported by the coverage profile. In HTML mode, it will correspond to
-// the opening or closing of a <span> tag and will be used to colorize the source
+// Boundary represents the position in a source file of the beginning
+// or end of a block as reported by the coverage profile. In HTML
+// mode, it will correspond to the opening or closing of a <span> tag
+// and will be used to colorize the source
 type Boundary struct {
 	Offset int     // Location as a byte offset in the source file.
 	Start  bool    // Is this the start of a block?
@@ -155,7 +158,8 @@ type Boundary struct {
 	Norm   float64 // Count normalized to [0..1].
 }
 
-// Boundaries returns a Profile as a set of Boundary objects within the provided src.
+// Boundaries returns a Profile as a set of Boundary objects within
+// the provided src.
 func (p *Profile) Boundaries(src []byte) (boundaries []Boundary) {
 	// Find maximum count.
 	max := 0
@@ -167,14 +171,16 @@ func (p *Profile) Boundaries(src []byte) (boundaries []Boundary) {
 	// Divisor for normalization.
 	divisor := math.Log(float64(max))
 
-	// boundary returns a Boundary, populating the Norm field with a normalized Count.
+	// boundary returns a Boundary, populating the Norm field with a
+	// normalized Count.
 	boundary := func(offset int, start bool, count int) Boundary {
 		b := Boundary{Offset: offset, Start: start, Count: count}
 		if !start || count == 0 {
 			return b
 		}
 		if max <= 1 {
-			b.Norm = 0.8 // Profile is in"set" mode; we want a heat map. Use cov8 in the CSS.
+			b.Norm = 0.8 // Profile is in"set" mode; we want a heat
+			// map. Use cov8 in the CSS.
 		} else if count > 0 {
 			b.Norm = math.Log(float64(count)) / divisor
 		}
@@ -190,7 +196,8 @@ func (p *Profile) Boundaries(src []byte) (boundaries []Boundary) {
 		if b.EndLine == line && b.EndCol == col || line > b.EndLine {
 			boundaries = append(boundaries, boundary(si, false, 0))
 			bi++
-			continue // Don't advance through src; maybe the next block starts here.
+			continue // Don't advance through src; maybe the next
+			// block starts here.
 		}
 		if src[si] == '\n' {
 			line++

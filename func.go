@@ -2,7 +2,8 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-// This file implements the visitor that computes the (line, column)-(line-column) range for each function.
+// This file implements the visitor that computes the (line,
+// column)-(line-column) range for each function.
 
 package cover
 
@@ -60,12 +61,16 @@ func WriteOutput(profile string) error {
 	return nil
 }
 
-// coverage returns the fraction of the statements in the function that were covered, as a numerator and denominator.
+// coverage returns the fraction of the statements in the function
+// that were covered, as a numerator and denominator.
 func (f *FuncExtent) coverage(profile *Profile) (num, den int64) {
-	// We could avoid making this n^2 overall by doing a single scan and annotating the functions,
-	// but the sizes of the data structures is never very large and the scan is almost instantaneous.
+	// We could avoid making this n^2 overall by doing a single scan
+	// and annotating the functions, but the sizes of the data
+	// structures is never very large and the scan is almost
+	// instantaneous.
 	var covered, total int64
-	// The blocks are sorted, so we can stop counting as soon as we reach the end of the relevant block.
+	// The blocks are sorted, so we can stop counting as soon as we
+	// reach the end of the relevant block.
 	for _, b := range profile.Blocks {
 		if b.StartLine > f.endLine || (b.StartLine == f.endLine && b.StartCol >= f.endCol) {
 			// Past the end of the function.
@@ -99,7 +104,8 @@ func findFuncs(name string) ([]*FuncExtent, error) {
 	return visitor.funcs, nil
 }
 
-// FuncExtent describes a function's extent in the source by file and position.
+// FuncExtent describes a function's extent in the source by file and
+// position.
 type FuncExtent struct {
 	Name      string
 	Decl      *ast.FuncDecl
@@ -111,7 +117,8 @@ type FuncExtent struct {
 	End       int
 }
 
-// FuncVisitor implements the visitor that builds the function position list for a file.
+// FuncVisitor implements the visitor that builds the function
+// position list for a file.
 type FuncVisitor struct {
 	fset    *token.FileSet
 	name    string // Name of file.
@@ -144,7 +151,8 @@ func (v *FuncVisitor) Visit(node ast.Node) ast.Visitor {
 	return v
 }
 
-// findFile finds the location of the named file in GOROOT, GOPATH etc.
+// findFile finds the location of the named file in GOROOT, GOPATH
+// etc.
 func findFile(file string) (string, error) {
 	dir, file := filepath.Split(file)
 	pkg, err := build.Import(dir, ".", build.FindOnly)
