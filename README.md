@@ -3,6 +3,7 @@
 [cover](https://godoc.org/github.com/gregoryv/cover) - Generate coverage reports from coverprofiles
 
 Generates colorized coverage report to stdout of uncovered sections.
+Source originates from the golang cover tool.
 
 ## Quick start
 

@@ -4,8 +4,8 @@ package main
 
 import (
 	"flag"
-	"github.com/gregoryv/cover"
 	"github.com/gregoryv/stamp"
+	"github.com/gregoryv/uncover"
 	"os"
 )
 
@@ -16,10 +16,10 @@ func init() {
 func main() {
 	flag.Parse()
 	stamp.AsFlagged()
-	profiles, err := cover.ParseProfiles(flag.Arg(0))
+	profiles, err := uncover.ParseProfiles(flag.Arg(0))
 	if err != nil {
 		print(err.Error())
 		os.Exit(1)
 	}
-	cover.Report(profiles, os.Stdout)
+	uncover.Report(profiles, os.Stdout)
 }

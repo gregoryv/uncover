@@ -5,7 +5,7 @@
 // This file implements the visitor that computes the (line,
 // column)-(line-column) range for each function.
 
-package cover
+package uncover
 
 import (
 	"fmt"

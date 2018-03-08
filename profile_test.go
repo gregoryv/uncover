@@ -1,4 +1,4 @@
-package cover_test
+package uncover_test
 
 import (
 	"testing"

@@ -1,7 +1,7 @@
-package cover_test
+package uncover_test
 
 import (
-	"github.com/gregoryv/cover"
+	"github.com/gregoryv/uncover"
 	"io/ioutil"
 	"os"
 	"os/exec"
@@ -10,7 +10,7 @@ import (
 
 var (
 	profile  string
-	profiles []*cover.Profile
+	profiles []*uncover.Profile
 )
 
 func init() {
@@ -20,12 +20,12 @@ func init() {
 	}
 	profile = fh.Name()
 	_, err = exec.Command("go", "test", "-coverprofile", profile,
-		"github.com/gregoryv/cover/test").Output()
+		"github.com/gregoryv/uncover/test").Output()
 	if err != nil {
 		panic(err)
 	}
 	fh.Close()
-	profiles, err = cover.ParseProfiles(profile)
+	profiles, err = uncover.ParseProfiles(profile)
 	if err != nil {
 		panic(err)
 	}
@@ -33,7 +33,7 @@ func init() {
 }
 
 func TestReport(t *testing.T) {
-	cov, _ := cover.Report(profiles, os.Stdout)
+	cov, _ := uncover.Report(profiles, os.Stdout)
 	exp := 50.0
 	if cov != exp {
 		t.Error("Expected %v, got %v", exp, cov)
