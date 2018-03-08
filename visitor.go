@@ -8,58 +8,13 @@
 package cover
 
 import (
-	"bufio"
 	"fmt"
 	"go/ast"
 	"go/build"
 	"go/parser"
 	"go/token"
-	"os"
 	"path/filepath"
-	"text/tabwriter"
 )
-
-func WriteOutput(profile string) error {
-	profiles, err := ParseProfiles(profile)
-	if err != nil {
-		return err
-	}
-
-	var out *bufio.Writer
-	out = bufio.NewWriter(os.Stdout)
-	defer out.Flush()
-
-	tabber := tabwriter.NewWriter(out, 1, 8, 4, ' ', 0)
-	defer tabber.Flush()
-
-	var total, covered int64
-	for _, profile := range profiles {
-		fn := profile.FileName
-		file, err := findFile(fn)
-		if err != nil {
-			return err
-		}
-		funcs, err := findFuncs(file)
-		if err != nil {
-			return err
-		}
-		// Now match up functions and profile blocks.
-		for _, f := range funcs {
-			c, t := f.coverage(profile)
-			// Only show uncovered funcs
-			if percent(c, t) < 100 {
-				sign := fmt.Sprintf("%sfunc %s()%s", green, f.Name, reset)
-				fmt.Fprintf(tabber, "%s:%d\n%s ", fn, f.startLine, sign)
-				Write(profile, tabber, f)
-			}
-			total += t
-			covered += c
-		}
-	}
-	fmt.Fprintf(tabber, "total:\t(statements)\t%.1f%%\n", percent(covered, total))
-
-	return nil
-}
 
 // coverage returns the fraction of the statements in the function
 // that were covered, as a numerator and denominator.
