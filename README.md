@@ -1,6 +1,6 @@
-[![Build Status](https://travis-ci.org/gregoryv/cover.svg?branch=master)](https://travis-ci.org/gregoryv/cover)
+[![Build Status](https://travis-ci.org/gregoryv/cover.svg?branch=master)](https://travis-ci.org/gregoryv/uncover)
 
-[cover](https://godoc.org/github.com/gregoryv/cover) - Generate coverage reports from coverprofiles
+[uncover](https://godoc.org/github.com/gregoryv/uncover) - Generate coverage reports from coverprofiles
 
 Generates colorized coverage report to stdout of uncovered sections.
 Source originates from the golang cover tool.
@@ -9,7 +9,7 @@ Source originates from the golang cover tool.
 
 Install
 
-    go get -u github.com/gregoryv/cover/...
+    go get -u github.com/gregoryv/uncover/...
 
 In your project test with coverage
 
