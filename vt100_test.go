@@ -3,6 +3,7 @@ package cover_test
 import (
 	"github.com/gregoryv/cover"
 	"io/ioutil"
+	"os"
 	"os/exec"
 	"testing"
 )
@@ -31,6 +32,10 @@ func init() {
 
 }
 
-func TestWrite(t *testing.T) {
-	cover.WriteOutput(profiles)
+func TestReport(t *testing.T) {
+	cov, _ := cover.Report(profiles, os.Stdout)
+	exp := 50.0
+	if cov != exp {
+		t.Error("Expected %v, got %v", exp, cov)
+	}
 }

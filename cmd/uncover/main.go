@@ -21,5 +21,5 @@ func main() {
 		print(err.Error())
 		os.Exit(1)
 	}
-	cover.WriteOutput(profiles)
+	cover.Report(profiles, os.Stdout)
 }

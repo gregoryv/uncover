@@ -10,7 +10,6 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
-	"os"
 	"text/tabwriter"
 	"text/template"
 )
@@ -21,47 +20,48 @@ const (
 	reset = "\033[0m"
 )
 
-func WriteOutput(profiles []*Profile) error {
-	var out *bufio.Writer
-	out = bufio.NewWriter(os.Stdout)
-	defer out.Flush()
-
+func Report(profiles []*Profile, out io.Writer) (coverage float64, err error) {
 	tabber := tabwriter.NewWriter(out, 1, 8, 4, ' ', 0)
 	defer tabber.Flush()
+	return WriteOutput(profiles, out)
+}
 
+func WriteOutput(profiles []*Profile, out io.Writer) (coverage float64, err error) {
 	var total, covered int64
+	var file string
+	var funcs []*FuncExtent
 	for _, profile := range profiles {
 		fn := profile.FileName
-		file, err := findFile(fn)
+		file, err = findFile(fn)
 		if err != nil {
-			return err
+			return
 		}
-		funcs, err := findFuncs(file)
+		funcs, err = findFuncs(file)
 		if err != nil {
-			return err
+			return
 		}
-		// Now match up functions and profile blocks.
+		// Match up functions and profile blocks.
 		for _, f := range funcs {
 			c, t := f.coverage(profile)
 			// Only show uncovered funcs
 			if percent(c, t) < 100 {
 				// todo print the func signature
 				sign := fmt.Sprintf("%sfunc %s(...) ...%s", green, f.Name, reset)
-				fmt.Fprintf(tabber, "%s:%d\n%s ", fn, f.startLine, sign)
-				Write(profile, tabber, f)
+				fmt.Fprintf(out, "%s:%d\n%s ", fn, f.startLine, sign)
+				Write(profile, out, f)
 			}
 			total += t
 			covered += c
 		}
 	}
-	fmt.Fprintf(tabber, "total:\t(statements)\t%.1f%%\n", percent(covered, total))
-
-	return nil
+	coverage = percent(covered, total)
+	fmt.Fprintf(out, "total:\t(statements)\t%.1f%%\n", coverage)
+	return
 }
 
 // Write reads the profile data from profile and generates colored
 // vt100 output to stdout.
-func Write(profile *Profile, tabber *tabwriter.Writer, fe *FuncExtent) error {
+func Write(profile *Profile, out io.Writer, fe *FuncExtent) error {
 	var d templateData
 
 	// Read profile data
@@ -94,7 +94,7 @@ func Write(profile *Profile, tabber *tabwriter.Writer, fe *FuncExtent) error {
 		Body: buf.String(),
 	})
 
-	err = colorTemplate.Execute(tabber, d)
+	err = colorTemplate.Execute(out, d)
 	if err != nil {
 		return err
 	}
