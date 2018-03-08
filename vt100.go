@@ -21,12 +21,7 @@ const (
 	reset = "\033[0m"
 )
 
-func WriteOutput(profile string) error {
-	profiles, err := ParseProfiles(profile)
-	if err != nil {
-		return err
-	}
-
+func WriteOutput(profiles []*Profile) error {
 	var out *bufio.Writer
 	out = bufio.NewWriter(os.Stdout)
 	defer out.Flush()
@@ -138,7 +133,7 @@ func vt100Gen(w io.Writer, src []byte, boundaries []Boundary) error {
 	return dst.Flush()
 }
 
-var colorTemplate = template.Must(template.New("html").Parse(tpl))
+var colorTemplate = template.Must(template.New("").Parse(tpl))
 
 type templateData struct {
 	Files []*templateFile

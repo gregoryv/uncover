@@ -16,6 +16,10 @@ func init() {
 func main() {
 	flag.Parse()
 	stamp.AsFlagged()
-
-	cover.WriteOutput(os.Args[1])
+	profiles, err := cover.ParseProfiles(flag.Arg(0))
+	if err != nil {
+		print(err.Error())
+		os.Exit(1)
+	}
+	cover.WriteOutput(profiles)
 }

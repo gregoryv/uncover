@@ -7,7 +7,10 @@ import (
 	"testing"
 )
 
-var profile string
+var (
+	profile  string
+	profiles []*cover.Profile
+)
 
 func init() {
 	fh, err := ioutil.TempFile("", "uncover")
@@ -21,8 +24,13 @@ func init() {
 		panic(err)
 	}
 	fh.Close()
+	profiles, err = cover.ParseProfiles(profile)
+	if err != nil {
+		panic(err)
+	}
+
 }
 
 func TestWrite(t *testing.T) {
-	cover.WriteOutput(profile)
+	cover.WriteOutput(profiles)
 }
