@@ -14,6 +14,6 @@ Install
 In your project test with coverage and show result
 
     go test -coverprofile /tmp/c.out
-    uncover /tmp/c.out
+    uncover /tmp/c.out [FuncName]
 
 ![screenshot](screenshot.png)

@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"strings"
 	"text/tabwriter"
 	"text/template"
 )
@@ -26,6 +27,8 @@ func Report(profiles []*Profile, out io.Writer) (coverage float64, err error) {
 	return WriteOutput(profiles, out)
 }
 
+var OnlyShow string
+
 func WriteOutput(profiles []*Profile, out io.Writer) (coverage float64, err error) {
 	var total, covered int64
 	var file string
@@ -40,6 +43,17 @@ func WriteOutput(profiles []*Profile, out io.Writer) (coverage float64, err erro
 		if err != nil {
 			return
 		}
+		// filter funcs
+		if OnlyShow != "" {
+			tmp := make([]*FuncExtent, 0)
+			for _, fe := range funcs {
+				if strings.Index(fe.Name, OnlyShow) >= 0 {
+					tmp = append(tmp, fe)
+				}
+			}
+			funcs = tmp
+		}
+
 		// Match up functions and profile blocks.
 		for _, f := range funcs {
 			c, t := f.coverage(profile)

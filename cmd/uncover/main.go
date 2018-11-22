@@ -17,6 +17,7 @@ func main() {
 	flag.Parse()
 	stamp.AsFlagged()
 	profiles, err := uncover.ParseProfiles(flag.Arg(0))
+	uncover.OnlyShow = flag.Arg(1)
 	if err != nil {
 		print(err.Error())
 		os.Exit(1)
