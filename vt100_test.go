@@ -36,6 +36,6 @@ func TestReport(t *testing.T) {
 	cov, _ := uncover.Report(profiles, os.Stdout)
 	exp := 50.0
 	if cov != exp {
-		t.Error("Expected %v, got %v", exp, cov)
+		t.Errorf("Expected %v, got %v", exp, cov)
 	}
 }
