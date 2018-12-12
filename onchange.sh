@@ -14,6 +14,6 @@ case $extension in
 esac
 
 go install github.com/gregoryv/uncover/cmd/uncover
-go test -coverprofile /tmp/c.out .
+go test -v -coverprofile /tmp/c.out -run=TestParseProfile2* .
 #go tool cover -o /tmp/coverage.html -html /tmp/c.out
-#uncover /tmp/c.out
+uncover /tmp/c.out ParseProfile2
