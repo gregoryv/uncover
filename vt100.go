@@ -22,9 +22,9 @@ const (
 )
 
 func Report(profiles []*Profile, out io.Writer) (coverage float64, err error) {
-	tabber := tabwriter.NewWriter(out, 1, 8, 4, ' ', 0)
-	defer tabber.Flush()
-	return WriteOutput(profiles, out)
+	tabw := tabwriter.NewWriter(out, 1, 8, 4, ' ', 0)
+	defer tabw.Flush()
+	return WriteOutput(profiles, tabw)
 }
 
 var OnlyShow string
