@@ -85,7 +85,7 @@ type FuncVisitor struct {
 func (v *FuncVisitor) Visit(node ast.Node) ast.Visitor {
 	switch n := node.(type) {
 	case *ast.FuncDecl:
-		if n.Body == nil {
+		if n.Body == nil || n.Name.Name == "main" {
 			// Do not count declarations of assembly functions.
 			break
 		}
