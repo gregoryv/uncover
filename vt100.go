@@ -53,6 +53,14 @@ func WriteOutput(profiles []*Profile, out io.Writer) (coverage float64, err erro
 			}
 			funcs = tmp
 		}
+		// remove main, it can never be covered
+		tmp := make([]*FuncExtent, 0)
+		for _, fe := range funcs {
+			if fe.Name != "main" {
+				tmp = append(tmp, fe)
+			}
+		}
+		funcs = tmp
 
 		// Match up functions and profile blocks.
 		for _, f := range funcs {

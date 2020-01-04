@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 ### Changed
 
+- Never show func main as it cannot be covered
 - Use tabwriter for output to minimize width of result
 
 ## [0.1.1] 2019-03-26
