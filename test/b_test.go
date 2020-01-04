@@ -5,5 +5,5 @@ import (
 )
 
 func TestB(t *testing.T) {
-	B()
+	magic(1, 1)
 }
