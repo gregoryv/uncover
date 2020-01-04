@@ -6,13 +6,11 @@ package uncover
 
 import (
 	"bufio"
-	"bytes"
 	"fmt"
 	"io"
 	"io/ioutil"
 	"strings"
 	"text/tabwriter"
-	"text/template"
 )
 
 const (
@@ -84,8 +82,6 @@ func WriteOutput(profiles []*Profile, out io.Writer) (coverage float64, err erro
 // Write reads the profile data from profile and generates colored
 // vt100 output to stdout.
 func Write(profile *Profile, out io.Writer, fe *FuncExtent) error {
-	var d templateData
-
 	// Read profile data
 	fn := profile.FileName
 	file, err := findFile(fn)
@@ -107,21 +103,9 @@ func Write(profile *Profile, out io.Writer, fe *FuncExtent) error {
 		}
 	}
 	// Write colored source to buffer
-	var buf bytes.Buffer
-	err = vt100Gen(&buf, src, funcBoundaries)
-	if err != nil {
-		return err
-	}
-	d.Files = append(d.Files, &templateFile{
-		Body: buf.String(),
-	})
-
-	err = colorTemplate.Execute(out, d)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	err = vt100Gen(out, src, funcBoundaries)
+	fmt.Fprintf(out, "\n%s}%s\n\n", green, reset)
+	return err
 }
 
 // vt100Gen generates an coverage report with the provided filename,
@@ -154,19 +138,3 @@ func vt100Gen(w io.Writer, src []byte, boundaries []Boundary) error {
 	}
 	return dst.Flush()
 }
-
-var colorTemplate = template.Must(template.New("").Parse(tpl))
-
-type templateData struct {
-	Files []*templateFile
-	Set   bool
-}
-
-type templateFile struct {
-	Name string
-	Body string
-}
-
-const tpl = `{{range $i, $f := .Files}}{{$f.Body}}
-{{end}}
-`

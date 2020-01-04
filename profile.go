@@ -11,7 +11,6 @@ package uncover
 import (
 	"bufio"
 	"fmt"
-	"math"
 	"os"
 	"regexp"
 	"sort"
@@ -152,49 +151,22 @@ func toInt(s string) int {
 // mode, it will correspond to the opening or closing of a <span> tag
 // and will be used to colorize the source
 type Boundary struct {
-	Offset int     // Location as a byte offset in the source file.
-	Start  bool    // Is this the start of a block?
-	Count  int     // Event count from the cover profile.
-	Norm   float64 // Count normalized to [0..1].
+	Offset int  // Location as a byte offset in the source file.
+	Start  bool // Is this the start of a block?
+	Count  int  // Event count from the cover profile.
 }
 
 // Boundaries returns a Profile as a set of Boundary objects within
 // the provided src.
 func (p *Profile) Boundaries(src []byte) (boundaries []Boundary) {
-	// Find maximum count.
-	max := 0
-	for _, b := range p.Blocks {
-		if b.Count > max {
-			max = b.Count
-		}
-	}
-	// Divisor for normalization.
-	divisor := math.Log(float64(max))
-
-	// boundary returns a Boundary, populating the Norm field with a
-	// normalized Count.
-	boundary := func(offset int, start bool, count int) Boundary {
-		b := Boundary{Offset: offset, Start: start, Count: count}
-		if !start || count == 0 {
-			return b
-		}
-		if max <= 1 {
-			b.Norm = 0.8 // Profile is in"set" mode; we want a heat
-			// map. Use cov8 in the CSS.
-		} else if count > 0 {
-			b.Norm = math.Log(float64(count)) / divisor
-		}
-		return b
-	}
-
 	line, col := 1, 2 // TODO: Why is this 2?
 	for si, bi := 0, 0; si < len(src) && bi < len(p.Blocks); {
 		b := p.Blocks[bi]
 		if b.StartLine == line && b.StartCol == col {
-			boundaries = append(boundaries, boundary(si, true, b.Count))
+			boundaries = append(boundaries, Boundary{si, true, b.Count})
 		}
 		if b.EndLine == line && b.EndCol == col || line > b.EndLine {
-			boundaries = append(boundaries, boundary(si, false, 0))
+			boundaries = append(boundaries, Boundary{si, false, 0})
 			bi++
 			continue // Don't advance through src; maybe the next
 			// block starts here.
