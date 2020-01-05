@@ -9,13 +9,10 @@ package uncover
 
 import (
 	"bytes"
-	"fmt"
 	"go/ast"
-	"go/build"
 	"go/parser"
 	"go/printer"
 	"go/token"
-	"path/filepath"
 )
 
 // coverage returns the fraction of the statements in the function
@@ -110,22 +107,4 @@ func (v *FuncVisitor) Visit(node ast.Node) ast.Visitor {
 		v.funcs = append(v.funcs, fe)
 	}
 	return v
-}
-
-// findFile finds the location of the named file in GOROOT, GOPATH
-// etc.
-func findFile(file string) (string, error) {
-	dir, file := filepath.Split(file)
-	pkg, err := build.Import(dir, ".", build.FindOnly)
-	if err != nil {
-		return "", fmt.Errorf("can't find %q: %v", file, err)
-	}
-	return filepath.Join(pkg.Dir, file), nil
-}
-
-func percent(covered, total int64) float64 {
-	if total == 0 {
-		total = 1 // Avoid zero denominator.
-	}
-	return 100.0 * float64(covered) / float64(total)
 }

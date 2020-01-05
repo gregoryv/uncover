@@ -6,8 +6,10 @@ package uncover
 
 import (
 	"fmt"
+	"go/build"
 	"io"
 	"io/ioutil"
+	"path/filepath"
 	"strings"
 	"text/tabwriter"
 
@@ -129,3 +131,21 @@ var (
 	green = "\033[32m"
 	reset = "\033[0m"
 )
+
+// findFile finds the location of the named file in GOROOT, GOPATH
+// etc.
+func findFile(file string) (string, error) {
+	dir, file := filepath.Split(file)
+	pkg, err := build.Import(dir, ".", build.FindOnly)
+	if err != nil {
+		return "", fmt.Errorf("can't find %q: %v", file, err)
+	}
+	return filepath.Join(pkg.Dir, file), nil
+}
+
+func percent(covered, total int64) float64 {
+	if total == 0 {
+		total = 1 // Avoid zero denominator.
+	}
+	return 100.0 * float64(covered) / float64(total)
+}
