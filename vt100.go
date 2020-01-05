@@ -5,19 +5,19 @@
 package uncover
 
 import (
-	"bufio"
 	"fmt"
 	"io"
 	"io/ioutil"
 	"strings"
 	"text/tabwriter"
+
+	"github.com/gregoryv/nexus"
 )
 
 const (
-	red         = "\033[31m"
-	green       = "\033[32m"
-	resetInline = "\033[90m"
-	reset       = "\033[0m"
+	red   = "\033[31m"
+	green = "\033[32m"
+	reset = "\033[0m"
 )
 
 func Report(profiles []*Profile, out io.Writer) (coverage float64, err error) {
@@ -57,7 +57,13 @@ func WriteOutput(profiles []*Profile, out io.Writer) (coverage float64, err erro
 		for _, f := range funcs {
 			c, t := f.coverage(profile)
 			// Only show uncovered funcs
-			if percent(c, t) < 100 {
+			p := percent(c, t)
+			switch {
+			case p == 0:
+				fmt.Fprintf(out, "%s:%d\n", fn, f.startLine)
+				fmt.Fprintf(out, "%s%s - UNCOVERED%s\n\n", red, f.Name, reset)
+			case p < 100:
+				fmt.Fprintf(out, "%s:%d\n", fn, f.startLine)
 				Write(out, profile, f)
 			}
 			total += t
@@ -71,7 +77,7 @@ func WriteOutput(profiles []*Profile, out io.Writer) (coverage float64, err erro
 
 // Write reads the profile data from profile and generates colored
 // vt100 output to stdout.
-func Write(out io.Writer, profile *Profile, fe *FuncExtent) error {
+func Write(out io.Writer, profile *Profile, f *FuncExtent) error {
 	// Read profile data
 	fn := profile.FileName
 	file, err := findFile(fn)
@@ -82,57 +88,48 @@ func Write(out io.Writer, profile *Profile, fe *FuncExtent) error {
 	if err != nil {
 		return fmt.Errorf("can't read %q: %v", fn, err)
 	}
-	// Filter boundaries according to fe
+	// Filter boundaries according to the extent
 	funcBoundaries := make([]Boundary, 0)
 	for _, b := range profile.Boundaries(src) {
-		if b.Offset > fe.End {
+		if b.Offset > f.End {
 			break
 		}
-		if b.Offset >= fe.Offset {
+		if b.Offset >= f.Offset {
 			funcBoundaries = append(funcBoundaries, b)
 		}
 	}
 	// Write colored source to buffer
-	fmt.Fprintf(out, "%s:%d\n", fn, fe.startLine)
-	err = vt100Gen(out, src, fe.Name, funcBoundaries)
+	err = vt100Gen(out, src, f.Name, funcBoundaries)
 	return err
-}
-
-func myx() {
-	// hepp
 }
 
 // vt100Gen generates an coverage report with the provided filename,
 // source code, and tokens, and writes it to the given Writer.
 func vt100Gen(w io.Writer, src []byte, sign string, boundaries []Boundary) error {
-	dst := bufio.NewWriter(w)
-	fmt.Fprint(dst, green, sign, resetInline)
+	p, err := nexus.NewPrinter(w)
+	p.Print(green, sign)
 
-	var color string
 	show := false
 	for i := range src {
 		for len(boundaries) > 0 && boundaries[0].Offset == i {
 			show = true
 			b := boundaries[0]
-			if b.Start {
-				color = red
-				if b.Count >= 1 {
-					color = green
-				}
-				fmt.Fprint(dst, color)
+			//p.Print(reset, b.Start, color)
+			if b.Start && b.Count == 0 {
+				p.Print(red)
 			} else {
-				dst.WriteString(resetInline)
+				p.Print(green)
 			}
 			boundaries = boundaries[1:]
 		}
 		if show && len(boundaries) != 0 {
-			dst.WriteByte(src[i])
+			p.Print(string(src[i]))
 		}
 		if len(boundaries) == 0 {
 			break
 		}
 	}
-	fmt.Fprintf(dst, "\n%s}%s\n\n", green, reset)
-	dst.WriteString(reset)
-	return dst.Flush()
+	p.Printf("\n%s}%s\n\n", green, reset)
+	p.Print(reset)
+	return *err
 }
