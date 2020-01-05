@@ -36,3 +36,14 @@ func Test_percent(t *testing.T) {
 	ok(percent(21, 100), 21)
 	ok(percent(2, 200), 1)
 }
+
+func Test_findFile(t *testing.T) {
+	_, err := findFile("x")
+	if err == nil {
+		t.Error("Should fail when looking for non existing file")
+	}
+	_, err = findFile("github.com/gregoryv/uncover/testdata/a.go")
+	if err != nil {
+		t.Error(err)
+	}
+}
