@@ -58,7 +58,7 @@ func WriteOutput(profiles []*Profile, out io.Writer) (coverage float64, err erro
 			// Only show uncovered funcs
 			if percent(c, t) < 100 {
 				// todo print the func signature
-				sign := fmt.Sprintf("%sfunc %s(...) ...%s", green, f.Name, reset)
+				sign := fmt.Sprint(green, f.Name, reset)
 				fmt.Fprintf(out, "%s:%d\n%s ", fn, f.startLine, sign)
 				Write(profile, out, f)
 			}

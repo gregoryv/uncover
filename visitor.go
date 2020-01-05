@@ -8,10 +8,12 @@
 package uncover
 
 import (
+	"bytes"
 	"fmt"
 	"go/ast"
 	"go/build"
 	"go/parser"
+	"go/printer"
 	"go/token"
 	"path/filepath"
 )
@@ -91,8 +93,12 @@ func (v *FuncVisitor) Visit(node ast.Node) ast.Visitor {
 		}
 		start := v.fset.Position(n.Pos())
 		end := v.fset.Position(n.End())
+
+		var sign bytes.Buffer
+		printer.Fprint(&sign, v.fset, n)
+		signEnd := n.Body.Lbrace - n.Type.Func
 		fe := &FuncExtent{
-			Name:      n.Name.Name,
+			Name:      sign.String()[:signEnd],
 			Decl:      n,
 			startLine: start.Line,
 			startCol:  start.Column,
@@ -104,6 +110,11 @@ func (v *FuncVisitor) Visit(node ast.Node) ast.Visitor {
 		v.funcs = append(v.funcs, fe)
 	}
 	return v
+}
+
+func (v *FuncVisitor) myname(x int) error {
+	x = 2 * x
+	return nil
 }
 
 // findFile finds the location of the named file in GOROOT, GOPATH
