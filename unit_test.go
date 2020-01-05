@@ -1,7 +1,7 @@
 package uncover
 
 import (
-	"os"
+	"io/ioutil"
 	"testing"
 )
 
@@ -14,7 +14,11 @@ func TestReport(t *testing.T) {
 		// files a.go and b.go
 		t.Errorf("testdata has two files: len(profiles) = %v", len(profiles))
 	}
-	cov, _ := Report(profiles, os.Stdout)
+
+	cov, err := Report(profiles, ioutil.Discard)
+	if err != nil {
+		t.Error(err)
+	}
 	exp := 50.0
 	if cov != exp {
 		t.Errorf("Expected %v, got %v", exp, cov)
