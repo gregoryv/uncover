@@ -28,21 +28,18 @@ func init() {
 	if err != nil {
 		panic(err)
 	}
-
 }
 
 func TestReport(t *testing.T) {
+	if len(profiles) != 2 {
+		// files a.go and b.go
+		t.Errorf("testdata has two files: len(profiles) = %v", len(profiles))
+	}
+
 	cov, _ := Report(profiles, os.Stdout)
 	exp := 50.0
 	if cov != exp {
 		t.Errorf("Expected %v, got %v", exp, cov)
-	}
-}
-
-func TestParseProfiles(t *testing.T) {
-	exp := 2
-	if len(profiles) != exp { // files a.go and b.go
-		t.Errorf("Expected %v, got %v", exp, len(profiles))
 	}
 }
 
