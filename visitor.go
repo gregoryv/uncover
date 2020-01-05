@@ -112,11 +112,6 @@ func (v *FuncVisitor) Visit(node ast.Node) ast.Visitor {
 	return v
 }
 
-func (v *FuncVisitor) myname(x int) error {
-	x = 2 * x
-	return nil
-}
-
 // findFile finds the location of the named file in GOROOT, GOPATH
 // etc.
 func findFile(file string) (string, error) {

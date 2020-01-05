@@ -14,12 +14,6 @@ import (
 	"github.com/gregoryv/nexus"
 )
 
-const (
-	red   = "\033[31m"
-	green = "\033[32m"
-	reset = "\033[0m"
-)
-
 func Report(profiles []*Profile, out io.Writer) (coverage float64, err error) {
 	tabw := tabwriter.NewWriter(out, 1, 8, 4, ' ', 0)
 	defer tabw.Flush()
@@ -105,31 +99,33 @@ func Write(out io.Writer, profile *Profile, f *FuncExtent) error {
 
 // vt100Gen generates an coverage report with the provided filename,
 // source code, and tokens, and writes it to the given Writer.
+// boundaries must contain pairs beginning and end
 func vt100Gen(w io.Writer, src []byte, sign string, boundaries []Boundary) error {
 	p, err := nexus.NewPrinter(w)
 	p.Print(green, sign)
-
-	show := false
-	for i := range src {
-		for len(boundaries) > 0 && boundaries[0].Offset == i {
-			show = true
-			b := boundaries[0]
-			//p.Print(reset, b.Start, color)
-			if b.Start && b.Count == 0 {
-				p.Print(red)
-			} else {
-				p.Print(green)
-			}
-			boundaries = boundaries[1:]
+	for i := 0; i < len(boundaries); i += 2 {
+		start := boundaries[i]
+		end := boundaries[i+1]
+		if start.Count == 0 {
+			p.Print(red)
+		} else {
+			p.Print(green)
 		}
-		if show && len(boundaries) != 0 {
-			p.Print(string(src[i]))
+		// handle empty blocks
+		k := start.Offset
+		if i > 0 {
+			k = boundaries[i-1].Offset
 		}
-		if len(boundaries) == 0 {
-			break
-		}
+		p.Print(string(src[k:end.Offset]))
 	}
 	p.Printf("\n%s}%s\n\n", green, reset)
 	p.Print(reset)
 	return *err
 }
+
+// colors
+var (
+	red   = "\033[31m"
+	green = "\033[32m"
+	reset = "\033[0m"
+)
