@@ -19,7 +19,7 @@ func init() {
 	}
 	profile = fh.Name()
 	_, err = exec.Command("go", "test", "-coverprofile", profile,
-		"github.com/gregoryv/uncover/test").Output()
+		"github.com/gregoryv/uncover/testdata").Output()
 	if err != nil {
 		panic(err)
 	}

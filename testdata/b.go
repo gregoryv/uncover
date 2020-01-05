@@ -1,4 +1,4 @@
-package test
+package testdata
 
 func magic(a, b int) (num int) {
 	switch {
