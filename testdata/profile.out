@@ -1,0 +1,7 @@
+mode: set
+github.com/gregoryv/uncover/testdata/a.go:3.16,5.2 1 0
+github.com/gregoryv/uncover/testdata/b.go:3.32,4.9 1 1
+github.com/gregoryv/uncover/testdata/b.go:12.2,12.8 1 1
+github.com/gregoryv/uncover/testdata/b.go:5.14,6.14 1 1
+github.com/gregoryv/uncover/testdata/b.go:7.13,8.10 1 0
+github.com/gregoryv/uncover/testdata/b.go:9.10,10.10 1 0

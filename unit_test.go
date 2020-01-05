@@ -1,41 +1,19 @@
 package uncover
 
 import (
-	"io/ioutil"
 	"os"
-	"os/exec"
 	"testing"
 )
 
-var (
-	profile  string
-	profiles []*Profile
-)
-
-func init() {
-	fh, err := ioutil.TempFile("", "uncover")
-	if err != nil {
-		panic(err)
-	}
-	profile = fh.Name()
-	_, err = exec.Command("go", "test", "-coverprofile", profile,
-		"github.com/gregoryv/uncover/testdata").Output()
-	if err != nil {
-		panic(err)
-	}
-	fh.Close()
-	profiles, err = ParseProfiles(profile)
-	if err != nil {
-		panic(err)
-	}
-}
-
 func TestReport(t *testing.T) {
+	profiles, err := ParseProfiles("testdata/profile.out")
+	if err != nil {
+		t.Fatal(err)
+	}
 	if len(profiles) != 2 {
 		// files a.go and b.go
 		t.Errorf("testdata has two files: len(profiles) = %v", len(profiles))
 	}
-
 	cov, _ := Report(profiles, os.Stdout)
 	exp := 50.0
 	if cov != exp {
