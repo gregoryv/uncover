@@ -45,3 +45,15 @@ func TestParseProfiles(t *testing.T) {
 		t.Errorf("Expected %v, got %v", exp, len(profiles))
 	}
 }
+
+func Test_percent(t *testing.T) {
+	ok := func(got, exp float64) {
+		t.Helper()
+		if got != exp {
+			t.Errorf("Got %v, expected %v", got, exp)
+		}
+	}
+	ok(percent(1, 0), 100)
+	ok(percent(21, 100), 21)
+	ok(percent(2, 200), 1)
+}
