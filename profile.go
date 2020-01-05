@@ -92,6 +92,7 @@ func ParseProfiles(fileName string) ([]*Profile, error) {
 	}
 	for _, p := range files {
 		sort.Sort(blocksByStart(p.Blocks))
+	} /*
 		// Merge samples from the same location.
 		j := 1
 		for i := 1; i < len(p.Blocks); i++ {
@@ -117,7 +118,7 @@ func ParseProfiles(fileName string) ([]*Profile, error) {
 			j++
 		}
 		p.Blocks = p.Blocks[:j]
-	}
+	}*/
 	// Generate a sorted slice.
 	profiles := make([]*Profile, 0, len(files))
 	for _, profile := range files {

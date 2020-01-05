@@ -14,9 +14,10 @@ import (
 )
 
 const (
-	red   = "\033[31m"
-	green = "\033[32m"
-	reset = "\033[0m"
+	red         = "\033[31m"
+	green       = "\033[32m"
+	resetInline = "\033[90m"
+	reset       = "\033[0m"
 )
 
 func Report(profiles []*Profile, out io.Writer) (coverage float64, err error) {
@@ -57,10 +58,7 @@ func WriteOutput(profiles []*Profile, out io.Writer) (coverage float64, err erro
 			c, t := f.coverage(profile)
 			// Only show uncovered funcs
 			if percent(c, t) < 100 {
-				// todo print the func signature
-				sign := fmt.Sprint(green, f.Name, reset)
-				fmt.Fprintf(out, "%s:%d\n%s ", fn, f.startLine, sign)
-				Write(profile, out, f)
+				Write(out, profile, f)
 			}
 			total += t
 			covered += c
@@ -73,7 +71,7 @@ func WriteOutput(profiles []*Profile, out io.Writer) (coverage float64, err erro
 
 // Write reads the profile data from profile and generates colored
 // vt100 output to stdout.
-func Write(profile *Profile, out io.Writer, fe *FuncExtent) error {
+func Write(out io.Writer, profile *Profile, fe *FuncExtent) error {
 	// Read profile data
 	fn := profile.FileName
 	file, err := findFile(fn)
@@ -95,15 +93,21 @@ func Write(profile *Profile, out io.Writer, fe *FuncExtent) error {
 		}
 	}
 	// Write colored source to buffer
-	err = vt100Gen(out, src, funcBoundaries)
-	fmt.Fprintf(out, "\n%s}%s\n\n", green, reset)
+	fmt.Fprintf(out, "%s:%d\n", fn, fe.startLine)
+	err = vt100Gen(out, src, fe.Name, funcBoundaries)
 	return err
+}
+
+func myx() {
+	// hepp
 }
 
 // vt100Gen generates an coverage report with the provided filename,
 // source code, and tokens, and writes it to the given Writer.
-func vt100Gen(w io.Writer, src []byte, boundaries []Boundary) error {
+func vt100Gen(w io.Writer, src []byte, sign string, boundaries []Boundary) error {
 	dst := bufio.NewWriter(w)
+	fmt.Fprint(dst, green, sign, resetInline)
+
 	var color string
 	show := false
 	for i := range src {
@@ -117,7 +121,7 @@ func vt100Gen(w io.Writer, src []byte, boundaries []Boundary) error {
 				}
 				fmt.Fprint(dst, color)
 			} else {
-				dst.WriteString(reset)
+				dst.WriteString(resetInline)
 			}
 			boundaries = boundaries[1:]
 		}
@@ -128,5 +132,7 @@ func vt100Gen(w io.Writer, src []byte, boundaries []Boundary) error {
 			break
 		}
 	}
+	fmt.Fprintf(dst, "\n%s}%s\n\n", green, reset)
+	dst.WriteString(reset)
 	return dst.Flush()
 }
