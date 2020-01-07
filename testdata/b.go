@@ -11,3 +11,6 @@ func magic(a, b int) (num int) {
 	}
 	return
 }
+
+func x() error                 {}
+func longerName() (int, error) {}

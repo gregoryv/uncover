@@ -13,6 +13,7 @@ import (
 	"go/parser"
 	"go/printer"
 	"go/token"
+	"strings"
 )
 
 // coverage returns the fraction of the statements in the function
@@ -91,11 +92,8 @@ func (v *FuncVisitor) Visit(node ast.Node) ast.Visitor {
 		start := v.fset.Position(n.Pos())
 		end := v.fset.Position(n.End())
 
-		var sign bytes.Buffer
-		printer.Fprint(&sign, v.fset, n)
-		signEnd := n.Body.Lbrace - n.Type.Func
 		fe := &FuncExtent{
-			Name:      sign.String()[:signEnd],
+			Name:      v.signature(n),
 			Decl:      n,
 			startLine: start.Line,
 			startCol:  start.Column,
@@ -107,4 +105,27 @@ func (v *FuncVisitor) Visit(node ast.Node) ast.Visitor {
 		v.funcs = append(v.funcs, fe)
 	}
 	return v
+}
+
+func (v *FuncVisitor) signature(n *ast.FuncDecl) string {
+	var w bytes.Buffer
+	printer.Fprint(&w, v.fset, n)
+	end := n.Body.Lbrace - n.Type.Func
+	fn := w.String()
+	// Using the printer may result in source being differently formatted
+	// than the incoming declaration. This happens when we have aligned bodies
+	//
+	// func a()          {}
+	// func longerName() {}
+	//
+	// printer.Fprint(...) of func a declaration would result in less whitespace
+	// between ) {
+	//
+	var sign string
+	if int(end) > len(fn) || fn[end+1] != '{' {
+		sign = fn[:strings.LastIndex(fn, "{")]
+	} else {
+		sign = fn[:end]
+	}
+	return strings.TrimSpace(sign)
 }
