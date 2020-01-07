@@ -4,9 +4,10 @@ package main
 
 import (
 	"flag"
+	"os"
+
 	"github.com/gregoryv/stamp"
 	"github.com/gregoryv/uncover"
-	"os"
 )
 
 func init() {
