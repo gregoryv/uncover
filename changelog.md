@@ -7,9 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 ### Changed
 
+- Shorten multiline funcs to oneline
 - Only use two colors, either it's covered or not.
 - Special print uncovered funcs, hiding their body
 - Using go/printer to print the entire func signature
+
+### Fixed
+
+- Signature panic when having small aligned funcs
 
 ## [0.2.0] 2020-01-04
 ### Changed

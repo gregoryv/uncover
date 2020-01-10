@@ -110,7 +110,6 @@ func (v *FuncVisitor) Visit(node ast.Node) ast.Visitor {
 func (v *FuncVisitor) signature(n *ast.FuncDecl) string {
 	var w bytes.Buffer
 	printer.Fprint(&w, v.fset, n)
-	end := n.Body.Lbrace - n.Type.Func
 	fn := w.String()
 	// Using the printer may result in source being differently formatted
 	// than the incoming declaration. This happens when we have aligned bodies
@@ -121,11 +120,17 @@ func (v *FuncVisitor) signature(n *ast.FuncDecl) string {
 	// printer.Fprint(...) of func a declaration would result in less whitespace
 	// between ) {
 	//
-	var sign string
-	if int(end) > len(fn) || fn[end+1] != '{' {
-		sign = fn[:strings.LastIndex(fn, "{")]
-	} else {
-		sign = fn[:end]
+	i := strings.Index(fn, "\n")
+	switch {
+	case i == -1:
+		// oneliner
+		i = strings.Index(fn, "\t{")
+		return fn[:i]
+	default:
+		i := strings.Index(fn, "{\n")
+		// tidy multiline signatures
+		sign := strings.TrimSpace(fn[:i])
+		sign = strings.ReplaceAll(sign, "\n", "")
+		return strings.ReplaceAll(sign, "\t", " ")
 	}
-	return strings.TrimSpace(sign)
 }
