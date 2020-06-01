@@ -19,3 +19,7 @@ In your project test with coverage and show result
     uncover /tmp/c.out [FuncName]
 
 ![screenshot](screenshot.png)
+
+Expect a minimum coverage
+
+    uncover -min 80.0 /tmp/c.out
