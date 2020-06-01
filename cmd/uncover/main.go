@@ -1,9 +1,10 @@
 package main
 
-//go:generate stamp -clfile ../../CHANGELOG.md -go build_stamp.go
+//go:generate stamp -clfile ../changelog.md -go build_stamp.go
 
 import (
 	"flag"
+	"fmt"
 	"os"
 
 	"github.com/gregoryv/stamp"
@@ -15,6 +16,7 @@ func init() {
 }
 
 func main() {
+	min := flag.Float64("min", 0.0, "Fail if total coverage(%) is below min")
 	flag.Parse()
 	stamp.AsFlagged()
 	profiles, err := uncover.ParseProfiles(flag.Arg(0))
@@ -23,5 +25,9 @@ func main() {
 		print(err.Error())
 		os.Exit(1)
 	}
-	uncover.Report(profiles, os.Stdout)
+	coverage, _ := uncover.Report(profiles, os.Stdout)
+	if coverage < *min {
+		fmt.Printf("coverage to low: expected >= %v%%\n", *min)
+		os.Exit(1)
+	}
 }
