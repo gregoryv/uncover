@@ -1,6 +1,6 @@
 package main
 
-//go:generate stamp -clfile ../changelog.md -go build_stamp.go
+//go:generate stamp -clfile ../../changelog.md -go build_stamp.go
 
 import (
 	"flag"
