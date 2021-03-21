@@ -20,7 +20,7 @@ import (
 
 // Profile represents the profiling data for a specific file.
 type Profile struct {
-	FileName string
+	Filename string
 	Mode     string
 	Blocks   []ProfileBlock
 }
@@ -35,7 +35,7 @@ type ProfileBlock struct {
 type byFileName []*Profile
 
 func (p byFileName) Len() int           { return len(p) }
-func (p byFileName) Less(i, j int) bool { return p[i].FileName < p[j].FileName }
+func (p byFileName) Less(i, j int) bool { return p[i].Filename < p[j].Filename }
 func (p byFileName) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
 
 // ParseProfiles parses profile data in the specified file and returns
@@ -73,7 +73,7 @@ func ParseProfiles(fileName string) ([]*Profile, error) {
 		p := files[fn]
 		if p == nil {
 			p = &Profile{
-				FileName: fn,
+				Filename: fn,
 				Mode:     mode,
 			}
 			files[fn] = p

@@ -29,7 +29,7 @@ func WriteOutput(profiles []*Profile, out io.Writer) (coverage float64, err erro
 	var file string
 	var funcs []*FuncExtent
 	for _, profile := range profiles {
-		fn := profile.FileName
+		fn := profile.Filename
 		file, err = findFile(fn)
 		if err != nil {
 			return
@@ -75,7 +75,7 @@ func WriteOutput(profiles []*Profile, out io.Writer) (coverage float64, err erro
 // vt100 output to stdout.
 func Write(out io.Writer, profile *Profile, f *FuncExtent) error {
 	// Read profile data
-	fn := profile.FileName
+	fn := profile.Filename
 	file, err := findFile(fn)
 	if err != nil {
 		return err
