@@ -1,11 +1,11 @@
 # Changelog
+
 All notable changes to this project will be documented in this file.
+This project adheres to semantic versioning.
 
-The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
-and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
+## [0.5.0] 2021-03-21
 
-## [unreleased]
-
+- Simplify and unit test func main
 - Func main os included as it's possible to test it
 
 ## [0.4.0] 2020-06-01
