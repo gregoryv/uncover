@@ -29,12 +29,11 @@ func main() {
 	switch {
 	case help:
 		cli.WriteUsageTo(cmd.Stderr())
-		cmd.Stop(0)
-		return
+		cmd.Exit(0)
+		return // return is here so we can test
 
 	case !cli.Ok():
-		fmt.Fprintln(cmd.Stderr(), cli.Error())
-		cmd.Stop(1)
+		cmd.Fatal(cli.Error())
 		return
 	}
 
@@ -45,10 +44,10 @@ func main() {
 	}
 	err := c.Run()
 	if err != nil {
-		fmt.Fprintln(cmd.Stderr(), err)
-		cmd.Stop(1)
+		cmd.Fatal(err)
 		return
 	}
+	cmd.Exit(0)
 }
 
 type Command struct {

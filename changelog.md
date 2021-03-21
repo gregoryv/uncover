@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [unreleased]
 
+- Func main os included as it's possible to test it
+
 ## [0.4.0] 2020-06-01
 
 - Added -min flag, uncover fails if below
