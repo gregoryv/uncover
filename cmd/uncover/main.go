@@ -23,9 +23,10 @@ func main() {
 			"Fail if total coverage(%) is below min",
 		).Float64(0.0)
 
-		profile  = cli.Required("PROFILE").String("")
-		onlyShow = cli.Optional("FUNC").String("")
+		profile = cli.Required("PROFILE").String("")
 	)
+	uncover.OnlyShow = cli.Optional("FUNC").String("")
+	log.SetFlags(0)
 
 	switch {
 	case help:
@@ -38,36 +39,16 @@ func main() {
 		return
 	}
 
-	log.SetFlags(0)
-	c := Command{
-		min:      min,
-		profile:  profile,
-		onlyShow: onlyShow,
-	}
-	err := c.Run()
+	profiles, err := uncover.ParseProfiles(profile)
 	if err != nil {
 		cmd.Fatal(err)
 		return
 	}
-	cmd.Exit(0)
-}
 
-type Command struct {
-	min      float64
-	profile  string
-	onlyShow string
-}
-
-// Run
-func (me *Command) Run() error {
-	profiles, err := uncover.ParseProfiles(me.profile)
-	if err != nil {
-		return err
-	}
-	uncover.OnlyShow = me.onlyShow
 	coverage, _ := uncover.Report(profiles, os.Stdout)
-	if coverage < me.min {
-		return fmt.Errorf("coverage to low: expected >= %v%%\n", me.min)
+	if coverage < min {
+		cmd.Fatal(fmt.Errorf("coverage to low: expected >= %v%%\n", min))
+		return
 	}
-	return nil
+	cmd.Exit(0)
 }
