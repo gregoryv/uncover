@@ -40,7 +40,16 @@ func Test_main_help(t *testing.T) {
 		t.Error(tc.Dump())
 	}
 }
-
+func Test_main_version(t *testing.T) {
+	tc := wolf.NewTCmd("uncover", "-v")
+	copyProfile(t)
+	cmd = tc
+	log.SetOutput(tc.Stderr()) // todo let NewTCmd do this
+	main()
+	if tc.ExitCode != 0 {
+		t.Error(tc.ExitCode, tc.Dump())
+	}
+}
 func Test_main_ok(t *testing.T) {
 	tc := wolf.NewTCmd("uncover", "profile.out")
 	copyProfile(t)

@@ -22,17 +22,24 @@ func main() {
 			"-min",
 			"Fail if total coverage(%) is below min",
 		).Float64(0.0)
+		version = cli.Flag("-v, --version")
 
 		profile = cli.Required("PROFILE").String("")
 	)
 	uncover.OnlyShow = cli.Optional("FUNC").String("")
 	log.SetFlags(0)
+	log.SetOutput(cmd.Stderr())
 
 	switch {
 	case help:
 		cli.WriteUsageTo(cmd.Stderr())
 		cmd.Exit(0)
 		return // return is here so we can test
+
+	case version:
+		fmt.Fprintln(cmd.Stdout(), uncover.Version())
+		cmd.Exit(0)
+		return
 
 	case !cli.Ok():
 		cmd.Fatal(cli.Error())
