@@ -4,6 +4,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/gregoryv/cmdline"
@@ -37,6 +38,7 @@ func main() {
 		return
 	}
 
+	log.SetFlags(0)
 	c := Command{
 		min:      min,
 		profile:  profile,
@@ -62,6 +64,7 @@ func (me *Command) Run() error {
 	if err != nil {
 		return err
 	}
+	uncover.OnlyShow = me.onlyShow
 	coverage, _ := uncover.Report(profiles, os.Stdout)
 	if coverage < me.min {
 		return fmt.Errorf("coverage to low: expected >= %v%%\n", me.min)
