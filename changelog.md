@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to semantic versioning.
 
+## [unreleased]
+
+- Improve Report performance by caching loaded files
+
 ## [0.5.0] 2021-03-21
 
 - Simplify and unit test func main

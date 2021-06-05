@@ -47,3 +47,16 @@ func Test_findFile(t *testing.T) {
 		t.Error(err)
 	}
 }
+
+// ----------------------------------------
+
+func Benchmark_Write(b *testing.B) {
+	profiles, err := ParseProfiles("testdata/profile.out")
+	if err != nil {
+		b.Fatal(err)
+	}
+
+	for i := 0; i < b.N; i++ {
+		Report(profiles, ioutil.Discard)
+	}
+}

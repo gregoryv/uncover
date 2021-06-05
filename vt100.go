@@ -74,16 +74,11 @@ func WriteOutput(profiles []*Profile, out io.Writer) (coverage float64, err erro
 // Write reads the profile data from profile and generates colored
 // vt100 output to stdout.
 func Write(out io.Writer, profile *Profile, f *FuncExtent) error {
-	// Read profile data
-	fn := profile.Filename
-	file, err := findFile(fn)
+	src, err := fileCache.load(profile.Filename)
 	if err != nil {
 		return err
 	}
-	src, err := ioutil.ReadFile(file)
-	if err != nil {
-		return fmt.Errorf("can't read %q: %v", fn, err)
-	}
+
 	// Filter boundaries according to the extent
 	funcBoundaries := make([]Boundary, 0)
 	for _, b := range profile.Boundaries(src) {
@@ -97,6 +92,33 @@ func Write(out io.Writer, profile *Profile, f *FuncExtent) error {
 	// Write colored source to buffer
 	err = vt100Gen(out, src, f.Name, funcBoundaries)
 	return err
+}
+
+// fileCache is used to cache already loaded files.
+var fileCache = &cache{}
+
+type cache struct {
+	filename string
+	data     []byte
+	err      error
+}
+
+func (me *cache) load(filename string) ([]byte, error) {
+	if filename == me.filename {
+		return me.data, me.err
+	}
+	me.filename = filename
+	file, err := findFile(filename)
+	if err != nil {
+		me.err = err
+		return nil, err
+	}
+	data, err := ioutil.ReadFile(file)
+	if err != nil {
+		me.err = fmt.Errorf("can't read %q: %v", filename, err)
+	}
+	me.data = data
+	return me.data, me.err
 }
 
 // vt100Gen generates an coverage report with the provided filename,
