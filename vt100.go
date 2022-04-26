@@ -38,6 +38,7 @@ func WriteOutput(profiles []*Profile, out io.Writer) (coverage float64, err erro
 		if err != nil {
 			return
 		}
+
 		// filter funcs
 		if OnlyShow != "" {
 			tmp := make([]*FuncExtent, 0)
@@ -51,6 +52,10 @@ func WriteOutput(profiles []*Profile, out io.Writer) (coverage float64, err erro
 
 		// Match up functions and profile blocks.
 		for _, f := range funcs {
+			// always skip unreachable, eg. stringer generated
+			if strings.Index(f.Name, "_()") > -1 {
+				continue
+			}
 			c, t := f.coverage(profile)
 			// Only show uncovered funcs
 			p := percent(c, t)

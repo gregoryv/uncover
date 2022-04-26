@@ -5,6 +5,7 @@ This project adheres to semantic versioning.
 
 ## [unreleased]
 
+- Always exclude uncallable _(), eg. stringer generated
 - Improve Report performance by caching loaded files
 
 ## [0.5.0] 2021-03-21
