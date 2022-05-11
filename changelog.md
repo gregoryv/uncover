@@ -3,7 +3,7 @@
 All notable changes to this project will be documented in this file.
 This project adheres to semantic versioning.
 
-## [unreleased]
+## [0.6.0] 2022-05-11
 
 - Fix issue with empty result when GOROOT not set
 - Always exclude uncallable _(), eg. stringer generated
