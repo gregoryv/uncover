@@ -11,7 +11,7 @@ Source originates from the golang cover tool.
 
 Install
 
-    go get -u github.com/gregoryv/uncover/...
+    go install github.com/gregoryv/uncover/cmd/uncover@latest
 
 In your project test with coverage and show result
 
