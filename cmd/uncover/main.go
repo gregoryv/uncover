@@ -52,7 +52,11 @@ func main() {
 		return
 	}
 
-	coverage, _ := uncover.Report(profiles, os.Stdout)
+	coverage, err := uncover.Report(profiles, os.Stdout)
+	if err != nil {
+		log.Fatal("failed to find files; please set GOROOT")
+	}
+
 	if coverage < min {
 		cmd.Fatal(fmt.Errorf("coverage to low: expected >= %v%%\n", min))
 		return

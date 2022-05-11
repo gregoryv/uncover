@@ -9,6 +9,7 @@ import (
 	"go/build"
 	"io"
 	"io/ioutil"
+	"os"
 	"path/filepath"
 	"strings"
 	"text/tabwriter"
@@ -165,6 +166,9 @@ func findFile(file string) (string, error) {
 	dir, file := filepath.Split(file)
 	pkg, err := build.Import(dir, ".", build.FindOnly)
 	if err != nil {
+		if _, err := os.Stat(file); err == nil {
+			return file, nil
+		}
 		return "", fmt.Errorf("can't find %q: %v", file, err)
 	}
 	return filepath.Join(pkg.Dir, file), nil

@@ -5,6 +5,7 @@ This project adheres to semantic versioning.
 
 ## [unreleased]
 
+- Fix issue with empty result when GOROOT not set
 - Always exclude uncallable _(), eg. stringer generated
 - Improve Report performance by caching loaded files
 
