@@ -23,3 +23,10 @@ In your project test with coverage and show result
 Expect a minimum coverage
 
     uncover -min 80.0 /tmp/c.out
+
+## Difference from `go tool cover`
+
+The purpose of uncover is to focus your work on what remains to be
+verified. Thus it only shows uncovered lines. It also excludes
+unreachable code, ie. `func _()` which is sometimes used for compile
+checks.
