@@ -16,34 +16,24 @@ var cmd wolf.Command = wolf.NewOSCmd()
 
 func main() {
 	var (
-		cli  = cmdline.NewParser(cmd.Args()...)
-		help = cli.Flag("-h, --help")
-		min  = cli.Option(
+		cli = cmdline.NewBasicParser()
+		min = cli.Option(
 			"-min",
 			"Fail if total coverage(%) is below min",
 		).Float64(0.0)
-		version = cli.Flag("-v, --version")
-
-		profile = cli.Required("PROFILE").String("")
+		version  = cli.Flag("-v, --version")
+		profile  = cli.NamedArg("PROFILE").String("")
+		onlyShow = cli.NamedArg("FUNC").String("")
 	)
-	uncover.OnlyShow = cli.Optional("FUNC").String("")
+	cli.Parse()
+
+	uncover.OnlyShow = onlyShow
 	log.SetFlags(0)
 	log.SetOutput(cmd.Stderr())
 
-	switch {
-	case help:
-		cli.WriteUsageTo(cmd.Stderr())
-		cmd.Exit(0)
-		return // return is here so we can test
-
-	case version:
+	if version {
 		fmt.Fprintln(cmd.Stdout(), uncover.Version())
 		cmd.Exit(0)
-		return
-
-	case !cli.Ok():
-		cmd.Fatal(cli.Error())
-		return
 	}
 
 	profiles, err := uncover.ParseProfiles(profile)
