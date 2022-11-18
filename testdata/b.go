@@ -6,11 +6,9 @@ func magic(a, b int) (num int) {
 		num = 2 * b
 	case b > 3:
 		num = 7
+	case b == 1:
 	default:
 		num = 0
 	}
 	return
 }
-
-func x() error                 {}
-func longerName() (int, error) {}
