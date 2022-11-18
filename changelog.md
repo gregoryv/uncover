@@ -3,7 +3,7 @@
 All notable changes to this project will be documented in this file.
 This project adheres to semantic versioning.
 
-## [unreleased]
+## [0.7.0] 2022-11-18
 
 - Fix issue with covered empty case statements
 
