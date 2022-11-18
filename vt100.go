@@ -136,6 +136,10 @@ func vt100Gen(w io.Writer, src []byte, sign string, boundaries []Boundary) error
 	for i := 0; i < len(boundaries); i += 2 {
 		start := boundaries[i]
 		end := boundaries[i+1]
+
+		if end.Start {
+			start, end = end, start
+		}
 		if start.Count == 0 {
 			p.Print(red)
 		} else {

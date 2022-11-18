@@ -5,6 +5,8 @@ This project adheres to semantic versioning.
 
 ## [unreleased]
 
+- Fix issue with covered empty case statements
+
 ## [0.6.0] 2022-05-11
 
 - Fix issue with empty result when GOROOT not set
