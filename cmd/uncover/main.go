@@ -9,10 +9,9 @@ import (
 
 	"github.com/gregoryv/cmdline"
 	"github.com/gregoryv/uncover"
-	"github.com/gregoryv/wolf"
 )
 
-var cmd wolf.Command = wolf.NewOSCmd()
+var cmd = cmdline.DefaultShell
 
 func main() {
 	var (

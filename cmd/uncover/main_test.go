@@ -6,13 +6,13 @@ import (
 	"os"
 	"testing"
 
-	"github.com/gregoryv/wolf"
+	"github.com/gregoryv/cmdline"
 )
 
 var homeDir, _ = os.Getwd()
 
 func Test_main_missing_profile(t *testing.T) {
-	tc := wolf.NewTCmd("uncover")
+	tc := cmdline.NewTCmd("uncover")
 	cmd = tc // inject it
 	log.SetOutput(tc.Stderr())
 	main()
@@ -22,7 +22,7 @@ func Test_main_missing_profile(t *testing.T) {
 }
 
 func Test_main_bad_profile(t *testing.T) {
-	tc := wolf.NewTCmd("uncover", "jibberish")
+	tc := cmdline.NewTCmd("uncover", "jibberish")
 	cmd = tc // inject it
 	log.SetOutput(tc.Stderr())
 	main()
@@ -32,7 +32,7 @@ func Test_main_bad_profile(t *testing.T) {
 }
 
 func Test_main_help(t *testing.T) {
-	tc := wolf.NewTCmd("uncover", "-h")
+	tc := cmdline.NewTCmd("uncover", "-h")
 	cmd = tc
 	log.SetOutput(tc.Stderr())
 	main()
@@ -41,7 +41,7 @@ func Test_main_help(t *testing.T) {
 	}
 }
 func Test_main_version(t *testing.T) {
-	tc := wolf.NewTCmd("uncover", "-v")
+	tc := cmdline.NewTCmd("uncover", "-v")
 	copyProfile(t)
 	cmd = tc
 	log.SetOutput(tc.Stderr()) // todo let NewTCmd do this
@@ -51,7 +51,7 @@ func Test_main_version(t *testing.T) {
 	}
 }
 func Test_main_ok(t *testing.T) {
-	tc := wolf.NewTCmd("uncover", "profile.out")
+	tc := cmdline.NewTCmd("uncover", "profile.out")
 	copyProfile(t)
 	cmd = tc
 	log.SetOutput(tc.Stderr()) // todo let NewTCmd do this
@@ -62,7 +62,7 @@ func Test_main_ok(t *testing.T) {
 }
 
 func Test_main_fails_min(t *testing.T) {
-	tc := wolf.NewTCmd("uncover", "-min", "100", "profile.out")
+	tc := cmdline.NewTCmd("uncover", "-min", "100", "profile.out")
 	copyProfile(t)
 	cmd = tc
 	log.SetOutput(tc.Stderr()) // todo let NewTCmd do this
