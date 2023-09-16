@@ -135,7 +135,13 @@ func vt100Gen(w io.Writer, src []byte, sign string, boundaries []Boundary) error
 	p.Print(green, sign)
 	for i := 0; i < len(boundaries); i += 2 {
 		start := boundaries[i]
-		end := boundaries[i+1]
+		// Overflow bug found in the wild; though the boundaries
+		// should always be in pairs. Protect against panic, though
+		// the result is unknown.
+		var end Boundary
+		if len(boundaries) > i+1 {
+			end = boundaries[i+1]
+		}
 
 		if end.Start {
 			start, end = end, start
