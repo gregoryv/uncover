@@ -7,12 +7,13 @@ import (
 	"testing"
 
 	"github.com/gregoryv/cmdline"
+	"github.com/gregoryv/cmdline/clitest"
 )
 
 var homeDir, _ = os.Getwd()
 
 func Test_main_missing_profile(t *testing.T) {
-	tc := cmdline.NewTCmd("uncover")
+	tc := clitest.NewShellT("uncover")
 	cmd = tc // inject it
 	log.SetOutput(tc.Stderr())
 	main()
@@ -22,7 +23,7 @@ func Test_main_missing_profile(t *testing.T) {
 }
 
 func Test_main_bad_profile(t *testing.T) {
-	tc := cmdline.NewTCmd("uncover", "jibberish")
+	tc := clitest.NewShellT("uncover", "jibberish")
 	cmd = tc // inject it
 	log.SetOutput(tc.Stderr())
 	main()
@@ -32,7 +33,7 @@ func Test_main_bad_profile(t *testing.T) {
 }
 
 func Test_main_help(t *testing.T) {
-	tc := cmdline.NewTCmd("uncover", "-h")
+	tc := clitest.NewShellT("uncover", "-h")
 	cmd = tc
 	log.SetOutput(tc.Stderr())
 	main()
@@ -41,7 +42,7 @@ func Test_main_help(t *testing.T) {
 	}
 }
 func Test_main_version(t *testing.T) {
-	tc := cmdline.NewTCmd("uncover", "-v")
+	tc := clitest.NewShellT("uncover", "-v")
 	copyProfile(t)
 	cmd = tc
 	log.SetOutput(tc.Stderr()) // todo let NewTCmd do this
@@ -51,7 +52,7 @@ func Test_main_version(t *testing.T) {
 	}
 }
 func Test_main_ok(t *testing.T) {
-	tc := cmdline.NewTCmd("uncover", "profile.out")
+	tc := clitest.NewShellT("uncover", "profile.out")
 	copyProfile(t)
 	cmd = tc
 	log.SetOutput(tc.Stderr()) // todo let NewTCmd do this
@@ -62,7 +63,7 @@ func Test_main_ok(t *testing.T) {
 }
 
 func Test_main_fails_min(t *testing.T) {
-	tc := cmdline.NewTCmd("uncover", "-min", "100", "profile.out")
+	tc := clitest.NewShellT("uncover", "-min", "100", "profile.out")
 	copyProfile(t)
 	cmd = tc
 	log.SetOutput(tc.Stderr()) // todo let NewTCmd do this
