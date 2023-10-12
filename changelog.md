@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to semantic versioning.
 
+## [0.8.0] 2023-10-12
+
+- Security patch of golang.org/x/net
+
 ## [0.7.1] 2023-09-16
 
 - Fix out of bound error
