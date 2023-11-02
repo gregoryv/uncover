@@ -6,7 +6,6 @@ import (
 	"os"
 	"testing"
 
-	"github.com/gregoryv/cmdline"
 	"github.com/gregoryv/cmdline/clitest"
 )
 
