@@ -44,7 +44,7 @@ func Test_main_version(t *testing.T) {
 	tc := clitest.NewShellT("uncover", "-v")
 	copyProfile(t)
 	cmd = tc
-	log.SetOutput(tc.Stderr()) // todo let NewTCmd do this
+	log.SetOutput(tc.Stderr())
 	main()
 	if tc.ExitCode != 0 {
 		t.Error(tc.ExitCode, tc.Dump())
@@ -54,7 +54,7 @@ func Test_main_ok(t *testing.T) {
 	tc := clitest.NewShellT("uncover", "profile.out")
 	copyProfile(t)
 	cmd = tc
-	log.SetOutput(tc.Stderr()) // todo let NewTCmd do this
+	log.SetOutput(tc.Stderr())
 	main()
 	if tc.ExitCode != 0 {
 		t.Error(tc.ExitCode, tc.Dump())
@@ -65,7 +65,7 @@ func Test_main_fails_min(t *testing.T) {
 	tc := clitest.NewShellT("uncover", "-min", "100", "profile.out")
 	copyProfile(t)
 	cmd = tc
-	log.SetOutput(tc.Stderr()) // todo let NewTCmd do this
+	log.SetOutput(tc.Stderr())
 	main()
 	if tc.ExitCode != 1 {
 		t.Error(tc.ExitCode, tc.Dump())
