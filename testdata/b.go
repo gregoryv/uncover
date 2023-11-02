@@ -12,3 +12,5 @@ func magic(a, b int) (num int) {
 	}
 	return
 }
+
+func noop() {}
