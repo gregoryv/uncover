@@ -1,4 +1,4 @@
-[uncover](https://godoc.org/github.com/gregoryv/uncover) - Generate coverage reports from coverprofiles
+[uncover](https://pkg.go.dev/github.com/gregoryv/uncover) - Generate coverage reports from coverprofiles
 
 Generates colorized coverage report to stdout of uncovered funcs.
 Source originates from the golang cover tool.
