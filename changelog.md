@@ -3,8 +3,9 @@
 All notable changes to this project will be documented in this file.
 This project adheres to semantic versioning.
 
-## [unreleased]
+## [0.9.0] 2024-08-24
 
+- Add MIT license
 - Update dependencies
 
 ## [0.8.0] 2023-10-12
