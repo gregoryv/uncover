@@ -6,5 +6,5 @@ toolchain go1.21.3
 
 require (
 	github.com/gregoryv/cmdline v0.15.3
-	github.com/gregoryv/nexus v0.6.0
+	github.com/gregoryv/nexus v0.7.0
 )
