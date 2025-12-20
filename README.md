@@ -1,3 +1,5 @@
+ARCHIVED! moved to https://sogvin.com/uncover
+
 [uncover](https://pkg.go.dev/github.com/gregoryv/uncover) - Generate coverage reports from coverprofiles
 
 Generates colorized coverage report to stdout of uncovered funcs.
